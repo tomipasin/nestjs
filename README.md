@@ -11,6 +11,8 @@ Aqui eu criei um CRUD com base em tudo que tenho estudado por aí implementando:
 
 E a lista vai aumentando na medida em que vou estudando. :-)
 
+Eu comento meu código, então é só dar uma olhada lá que está tudo explicadinho. 
+
 ## Como testar?
 * Clona o repositório;
 * Executa `nppm install` para instalar os pacotes;

@@ -5,6 +5,18 @@ const cookieSession = require('cookie-session');
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import {UsersModule} from './users/users.module';
 
+
+/**
+ * Aqui a função principal do nosso sistema. 
+ * Ela criará um app baseado em Express usando as diretrizes
+ * definidas em AppModule. 
+ * 
+ * Aqui também está a chave da cookieSession e a config de uso da
+ * globalPipes que vai ser o handler de toda req http. 
+ * 
+ * Por fim as configs referentes ao Swagger que criarão o endpoint /doc
+ * com a documentação da nossa API (sempre atualizada!!!)
+ */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(
@@ -31,6 +43,6 @@ async function bootstrap() {
   await app.listen(3000);
 
   console.log('Servidor rodando na porta 3000');
-  
+
 }
 bootstrap();

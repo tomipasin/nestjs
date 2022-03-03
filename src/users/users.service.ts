@@ -3,6 +3,13 @@ import { Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 
+/**
+ * Aqui no service definimos os métodos da classe de UserService.
+ *
+ * Esse @Injectable indica que essa classe é um 'Provider' e pode ser injetada em
+ * outras classes via injeção de dependência no construtor.
+ *
+ */
 @Injectable()
 export class UsersService {
   //injeção de dependência.
@@ -14,7 +21,7 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    if(!id){
+    if (!id) {
       return null;
     }
     return this.repo.findOne(id);
@@ -42,7 +49,7 @@ export class UsersService {
    * em user e em seguida salvar.
    * Uso save em vez de update pois quero preservar a execução dos
    * hooks lá no user.entity.
-   * 
+   *
    * Uso aqui o NotFoundException no lugar do Throw new Error por
    * ser uma forma de lidar com um not found mais adaptada pelo Nest.
    *
@@ -65,10 +72,6 @@ export class UsersService {
    * Para a remoção farei a mesma coisa: busco pelo ID e
    * depois uso remove() para preservar a execução dos
    * hooks lá na entity.
-   *
-   *
-   * @param id
-   * @returns
    */
   async remove(id: number) {
     const user = await this.findOne(id);
@@ -77,5 +80,4 @@ export class UsersService {
     }
     return this.repo.remove(user);
   }
-
 }

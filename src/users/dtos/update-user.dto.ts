@@ -1,7 +1,10 @@
 import  {IsEmail, IsString, IsOptional} from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
-
+/**
+ * O @ApiPropertyOptional no caso indica NA DOCUMENTAÇÃO que o campo não é obrigatório. 
+ * O @IsOptional indica para o sistema a mesma coisa. 
+ */
 export class UpdateUserDto {
     @ApiPropertyOptional({
         description: 'Email que substituirá o atual.'

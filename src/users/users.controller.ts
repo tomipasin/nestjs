@@ -10,7 +10,7 @@ import {
   NotFoundException,
   UseInterceptors,
   ClassSerializerInterceptor,
-  Session
+  Session,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -20,47 +20,67 @@ import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
 import { AuthService } from './auth.service';
 
+/**
+ * Neste caso a controller cria o nível '/auth' no meu endpoint e
+ * tudo dentro dela cria níveis inferiores.
+ *
+ * @Serialize trata da conversão do DTO em string.
+ *
+ * No meu construtor injeto as dependências UsersService e AuthService.
+ *
+ *
+ */
 @Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
   constructor(
     private usersService: UsersService,
-    private authService: AuthService
-    ) {}
-
+    private authService: AuthService,
+  ) {}
 
   /**
    * Aqui uso o AuthService para tratar do signup e sign in.
-   * O @Session trata dos cookies. 
-   *  
-   */  
+   * O @Session trata dos cookies.
+   *
+   */
   @Post('/signup')
-  async createUser(@Body() body: CreateUserDto, @Session() session:any) {
-    //valida o corpo em relação ao DTO. 
-    const user =  await this.authService.signup(body.email, body.password);
+  async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+    //valida o corpo em relação ao DTO.
+    const user = await this.authService.signup(body.email, body.password);
     //insere o valor do user.id no session.id para fins de tratamento de cookies.
     session.id = user.id;
     return user;
   }
 
   @Post('/signin')
-  async signin(@Body() body: CreateUserDto, @Session() session:any ){
+  async signin(@Body() body: CreateUserDto, @Session() session: any) {
+    //valida o corpo em relação ao DTO.
     const user = await this.authService.signin(body.email, body.password);
+    //insere o valor do user.id no session.id para fins de tratamento de cookies.
     session.id = user.id;
     return user;
   }
 
+  /**
+   *
+   * método para verificar qual user está logado.
+   *
+   */
   @Get('/whoami')
-  whoAmI(@Session() session: any){
+  whoAmI(@Session() session: any) {
     return this.usersService.findOne(session.id);
   }
 
+  /**
+   * Método para deslogar um usuário.
+   * Na prática só coloca o ID da sessão como null.
+   *
+   */
   @Post('/signout')
-  signOut(@Session() session: any){
-    const sign = session.id = null;
-    return 'Usuário deslogado com sucesso!'
+  signOut(@Session() session: any) {
+    session.id = null;
+    return 'Usuário deslogado com sucesso!';
   }
-
 
   /**
    * embora id seja number na nossa app tudo que vêm do navegador é string.
@@ -120,15 +140,18 @@ export class UsersController {
     return this.usersService.update(parseInt(id), body);
   }
 
-  @Post('/colors/:color')
-  setColor(@Param('color') color: string, @Session() session: any){
-    session.color = color;
+  /**
+   * Aqui criei dois endpoints para entender os cookies de sessão.
+   * Em um deles eu defino uma mensagem e no outro eu leio essa mensagem.
+   *
+   */
+  @Post('/cookies/:cookie')
+  setColor(@Param('cookie') cookie: string, @Session() session: any) {
+    session.cookie = cookie;
   }
 
-  @Get('/colors/all')
-  getColor(@Session() session:any){
-    console.log(session);
-
-    return session.color;
+  @Get('/cookies/all')
+  getColor(@Session() session: any) {
+    return session.cookie;
   }
 }
