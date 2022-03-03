@@ -29,5 +29,8 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document);
 
   await app.listen(3000);
+
+  console.log('Servidor rodando na porta 3000');
+  
 }
 bootstrap();
