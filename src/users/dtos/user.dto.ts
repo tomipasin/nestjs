@@ -1,5 +1,5 @@
 import  {Expose} from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 /**
  * @Expose() indica os campos que serão expostos na serialização.

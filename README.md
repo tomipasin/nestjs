@@ -7,6 +7,7 @@ Aqui eu criei um CRUD com base em tudo que tenho estudado por aí implementando:
 * Autenticação com hash e salt;
 * TypeORM;
 * DTOs;
+* Guards;
 * Documentação gerada automaticamente com Swagger;
 
 E a lista vai aumentando na medida em que vou estudando. :-)

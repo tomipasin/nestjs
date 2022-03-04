@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   Session,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -19,7 +20,8 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
 import { AuthService } from './auth.service';
-
+import { CurrentUser } from './decorators/current-user.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
 /**
  * Neste caso a controller cria o nível '/auth' no meu endpoint e
  * tudo dentro dela cria níveis inferiores.
@@ -63,12 +65,24 @@ export class UsersController {
 
   /**
    *
-   * método para verificar qual user está logado.
+   * métodos para verificar qual user está logado.
+   * No que está comentado eu não uso interceptor mas simplesmente
+   * consulto os dados da sessão atial e retorno.
+   *
+   * No trecho ativo eu uso o meu interceptor global CurrentUserInterceptor
+   * para interceptar a requisição, buscar o usuário pelo ID no BD e
+   * retornar quem é o cidadão.
    *
    */
+  // @Get('/whoami')
+  // whoAmI(@Session() session: any) {
+  //   console.log(session)
+  //   return this.usersService.findOne(session.id);
+  // }
+  @UseGuards(AuthGuard)
   @Get('/whoami')
-  whoAmI(@Session() session: any) {
-    return this.usersService.findOne(session.id);
+  whoAmI(@CurrentUser() user: User) {
+    return user;
   }
 
   /**
@@ -76,6 +90,7 @@ export class UsersController {
    * Na prática só coloca o ID da sessão como null.
    *
    */
+  @UseGuards(AuthGuard)
   @Post('/signout')
   signOut(@Session() session: any) {
     session.id = null;
@@ -103,7 +118,7 @@ export class UsersController {
    * Decorators são funções.
    *
    */
-
+  @UseGuards(AuthGuard)
   @Get('/:id')
   async findUser(@Param('id') id: string) {
     const user = await this.usersService.findOne(parseInt(id));
@@ -124,17 +139,20 @@ export class UsersController {
    * @param email
    * @returns
    */
+  @UseGuards(AuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   findAllUsers(@Query('email') email: string) {
     return this.usersService.find(email);
   }
 
+  @UseGuards(AuthGuard)
   @Delete('/:id')
   removeUser(@Param('id') id: string) {
     return this.usersService.remove(parseInt(id));
   }
 
+  @UseGuards(AuthGuard)
   @Patch('/:id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     return this.usersService.update(parseInt(id), body);
@@ -145,11 +163,13 @@ export class UsersController {
    * Em um deles eu defino uma mensagem e no outro eu leio essa mensagem.
    *
    */
+  @UseGuards(AuthGuard)
   @Post('/cookies/:cookie')
   setColor(@Param('cookie') cookie: string, @Session() session: any) {
     session.cookie = cookie;
   }
 
+  @UseGuards(AuthGuard)
   @Get('/cookies/all')
   getColor(@Session() session: any) {
     return session.cookie;
