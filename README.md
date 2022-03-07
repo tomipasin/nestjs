@@ -9,6 +9,7 @@ Aqui eu criei um CRUD com base em tudo que tenho estudado por aí implementando:
 * DTOs;
 * Guards;
 * Documentação gerada automaticamente com Swagger;
+* Testes unitários;
 
 E a lista vai aumentando na medida em que vou estudando. :-)
 
